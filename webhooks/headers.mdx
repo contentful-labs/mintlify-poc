@@ -1,0 +1,167 @@
+---
+title: "Webhook headers"
+description: "An introduction to webhook headers."
+sidebarTitle: "Webhook headers"
+---
+# Overview
+
+Every webhook request includes the following predefined headers:
+
+Header Name                 | Value
+----------------------------|--------
+`X-Contentful-Topic`        |`ContentManagement.[Type].[Action]`
+`X-Contentful-Webhook-Name` | Webhook's name
+`Content-Type`              |`application/vnd.contentful.management.v1+json`
+
+Consuming services can use the `X-Contentful-Topic` header to determine the type of payload included in the webhook call without looking into it. The topics depend on various actions which are described in the [concepts section](/developers/docs/webhooks/overview/).
+
+<details>
+  <summary>The <code>X-Contentful-Topic</code> header can have the following values:</summary>
+  <ul>
+    <li><code>ContentManagement.ContentType.create</code></li>
+    <li><code>ContentManagement.ContentType.save</code></li>
+    <li><code>ContentManagement.ContentType.publish</code></li>
+    <li><code>ContentManagement.ContentType.unpublish</code></li>
+    <li><code>ContentManagement.ContentType.delete</code></li>
+    <li><code>ContentManagement.Entry.create</code></li>
+    <li><code>ContentManagement.Entry.save</code></li>
+    <li><code>ContentManagement.Entry.auto_save</code></li>
+    <li><code>ContentManagement.Entry.archive</code></li>
+    <li><code>ContentManagement.Entry.unarchive</code></li>
+    <li><code>ContentManagement.Entry.publish</code></li>
+    <li><code>ContentManagement.Entry.unpublish</code></li>
+    <li><code>ContentManagement.Entry.delete</code></li>
+    <li><code>ContentManagement.Asset.create</code></li>
+    <li><code>ContentManagement.Asset.save</code></li>
+    <li><code>ContentManagement.Asset.auto_save</code></li>
+    <li><code>ContentManagement.Asset.archive</code></li>
+    <li><code>ContentManagement.Asset.unarchive</code></li>
+    <li><code>ContentManagement.Asset.publish</code></li>
+    <li><code>ContentManagement.Asset.unpublish</code></li>
+    <li><code>ContentManagement.Asset.delete</code></li>
+    <li><code>ContentManagement.Task.Create</code></li>
+    <li><code>ContentManagement.Task.Save</code></li>
+    <li><code>ContentManagement.Task.Delete</code></li>
+    <li><code>ContentManagement.Comment.create</code></li>
+    <li><code>ContentManagement.Comment.save</code></li>
+    <li><code>ContentManagement.Comment.delete</code></li>
+    <li><code>ContentManagement.Release.create</code></li>
+    <li><code>ContentManagement.Release.save</code></li>
+    <li><code>ContentManagement.Release.delete</code></li>
+    <li><code>ContentManagement.Workflow.create</code></li>
+    <li><code>ContentManagement.Workflow.save</code></li>
+    <li><code>ContentManagement.Workflow.complete</code></li>
+    <li><code>ContentManagement.TemplateInstallation.complete</code></li>
+  </ul>
+  <p>Other event types</p>
+  <ul>
+    <li><code>ContentManagement.ReleaseAction.create</code></li>
+    <li><code>ContentManagement.ReleaseAction.execute</code></li>
+    <li><code>ContentManagement.ScheduledAction.create</code></li>
+    <li><code>ContentManagement.ScheduledAction.save</code></li>
+    <li><code>ContentManagement.ScheduledAction.delete</code></li>
+    <li><code>ContentManagement.BulkAction.create</code></li>
+    <li><code>ContentManagement.BulkAction.execute</code></li>
+    <li><code>SpaceManagement.EnvironmentAlias.create</code></li>
+    <li><code>SpaceManagement.EnvironmentAlias.change_target</code></li>
+    <li><code>SpaceManagement.EnvironmentAlias.delete</code></li>
+    <li><code>AppManagement.AppInstallation.create</code></li>
+    <li><code>AppManagement.AppInstallation.save</code></li>
+    <li><code>AppManagement.AppInstallation.delete</code></li>
+    <li><code>AppManagement.AppActionCall.call</code></li>
+  </ul>
+</details>
+
+## Contextual event headers
+
+Additionally, extra headers may be emitted to provide context for an action, such as an entry being published by a scheduled action or as part of a release.
+
+Header name                        | Value
+-----------------------------------|--------
+`x-contentful-scheduled-action-id` | The `sys.id` of the ScheduledAction that was executed. Present only when executed via a scheduled action
+`x-contentful-bulk-action-id`      | The `sys.id` of the BulkAction that was executed. Present only when executed via a bulk action
+`x-contentful-release-action-id`   | The `sys.id` of the ReleaseAction that was executed. Present only when executed via a release action
+`x-contentful-release-id`          | The `sys.id` of the Release that contained this Entry or Asset. Present only when executed via a release action
+`x-contentful-release-version`     | The `sys.version` of the Release that contained this Entry or Asset at execution time. Present only when executed via a release action
+
+Consuming services can use these headers to correlate events across multiple webhook calls to group the calls into a single downstream action, such as debouncing a rebuild of a website
+
+## CRN header
+
+When triggered by an App Action call or an App Installation, Asset, or Entry event, the `X-Contentful-CRN` header is included.
+This header provides the Contentful Resource Name (crn), an API identifier of the entity that triggered the webhook.
+
+## Custom headers
+
+Besides these headers, you can configure webhooks to be called with a set of additional headers of your choice. When creating or updating a webhook, you can provide a list of headers that will be included in successive calls to that webhook.
+
+For example assume that:
+
+- One of your entries has just been published.
+- The name of your webhook is 'Notify subscribers'.
+- You have defined two custom headers, `X-Notify: subscribers` and `Authentication: subscribers`.
+
+The webhook would be called with the following set of headers:
+
+```
+X-Contentful-Topic: ContentManagement.Entry.publish
+X-Contentful-Webhook-Name: Notify subscribers
+X-Notify: subscribers
+Authentication: subscribers
+```
+
+Custom headers are provided with the `headers` property of the Webhook Definition:
+
+```js
+{
+  ...,
+  "headers": [
+    { "key": "X-Notify", "value": "subscribers" },
+    { "key": "Authentication", "value": "subscribers" }
+  ]
+}
+```
+
+You can mark a header as secret. Value of secret headers is hidden in the web app, API responses and logs. The first time you define a secret header you need to provide its value and the `secret` flag set to `true`:
+
+```js
+{
+  ...,
+  "headers": [
+    { "key": "X-Notify", "value": "subscribers" },
+    { "key": "Authentication", "value": "subscribers", "secret": true }
+  ]
+}
+```
+
+Any consecutive update can omit the `value` property as long as the `secret` is `true`. Previously provided value will be used in this scenario:
+
+```js
+{
+  ...,
+  "headers": [
+    { "key": "X-Notify", "value": "updated subscribers" },
+    { "key": "Authentication", "secret": true }
+  ]
+}
+```
+
+Header values may contain values from the original payload. See [header transformations](/developers/docs/webhooks/transformations/#header-transformation).
+
+## Header transformations
+For more information on header transformations, check out the [webhook transformations page.](/developers/docs/webhooks/transformations/#header-transformation)
+
+## Signed request verification headers
+
+When you've configured a webhook signing secret in the webhook settings of your space, a signature will be generated for all webhook requests coming from events in that space. When a consuming service receives a request, it can compute a signature in the same way. If the secret is the same, the signatures will match too, thus verifying that the sender knows the secret. For this reason, it is also important to not share the secret with any third party.
+
+This signature and some additional metadata is then added to the headers of the request before it is sent. The headers look like this:
+
+Header name                        | Value
+-----------------------------------|--------
+`x-contentful-signature`           | The computed signature of an individual request.
+`x-contentful-signed-headers`      | A comma-separated list of headers included in the computed signature.
+`x-contentful-timestamp`           | Timestamp of when the request was signed. Can be used to ensure a TTL and avoid processing stale or replayed events.
+
+Consuming services can use these headers to verify the authenticity and integrity of incoming webhooks.
+See [verifyRequest](https://github.com/contentful/node-apps-toolkit/blob/master/src/requests/verify-request.ts#L28-L87) in node-apps-toolkit for more information.

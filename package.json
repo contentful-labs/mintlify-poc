@@ -1,0 +1,30 @@
+{
+  "name": "mintlify-poc",
+  "version": "1.0.0",
+  "description": "Use the starter kit to get your docs deployed and ready to customize.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/contentful-labs/mintlify-poc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/contentful-labs/mintlify-poc/issues"
+  },
+  "homepage": "https://github.com/contentful-labs/mintlify-poc#readme",
+  "dependencies": {
+    "@contentful/marketing-design-system": "^1.0.101",
+    "contentful": "^10.15.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9"
+  }
+}

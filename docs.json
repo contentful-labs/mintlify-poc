@@ -1,54 +1,99 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "theme": "aspen",
+  "name": "Contentful Developer Documentation",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#6D7682",
+    "light": "#6D7682",
+    "dark": "#6D7682"
   },
-  "favicon": "/favicon.svg",
+  "background": {
+    "color": {
+      "dark": "#2B2D31"
+    }
+  },
+  "favicon": "/logo/Contentful_C_White.svg",
   "navigation": {
     "tabs": [
-      {
-        "tab": "Guides",
-        "groups": [
+      {"tab": "Get started",
+      "groups": [
+        {
+          "group": "Getting started",
+          "pages": [
+            "index",
+            "quickstart",
+            "development"
+          ]
+        },
+        {
+          "group": "Customization",
+          "pages": [
+            "essentials/settings",
+            "essentials/navigation"
+          ]
+        },
+        {
+          "group": "Writing content",
+          "pages": [
+            "essentials/markdown",
+            "essentials/code",
+            "essentials/images",
+            "essentials/reusable-snippets"
+          ]
+        },
+        {
+          "group": "AI tools",
+          "pages": [
+            "ai-tools/cursor",
+            "ai-tools/claude-code",
+            "ai-tools/windsurf"
+          ]
+        }
+      ]
+    },
+      {"tab": "Concepts"},
+      {"tab": "Tutorials"},
+      {"tab": "Platforms"},
+      {"tab": "Extensibility"},
+      {"tab": "Webhooks",
+        "pages": [
+          "webhooks/index",
           {
-            "group": "Getting started",
+            "group": "Overview",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "webhooks/overview",
+              {"group": "Details", 
+              "pages": [
+                "webhooks/headers"
+              ]
+            },
+              "webhooks/filters",
+              "webhooks/transformations",
+              "webhooks/secrets",
+              "webhooks/aws-configuration"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Triggers",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "webhooks/content-events",
+              "webhooks/action-events"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Guides",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "webhooks/configure-webhook"
             ]
           }
         ]
       },
+      {"tab": "Infrastructure"},
+      {"tab": "Studio"},
+      {"tab": "Personalization"},
+      {"tab": "Tools"},
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
             "group": "API documentation",
@@ -65,6 +110,11 @@
               "api-reference/endpoint/webhook"
             ]
           }
+        ]
+      },
+      {"tab": "Changelog",
+        "pages": [
+          "changelog"
         ]
       }
     ],
@@ -89,19 +139,27 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/Contentful_C_White.svg",
+    "dark": "/logo/Contentful_C_Monochrome_White.svg"
   },
   "navbar": {
     "links": [
       {
-        "label": "Support",
+        "label": "Changelog",
+        "href": "https://contentful.com/changelog"
+      },
+      {
+        "label": "Blog",
+        "href": "mailto:hi@mintlify.com"
+      },
+      {
+        "label": "Help Center",
         "href": "mailto:hi@mintlify.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
+      "label": "Get Started",
       "href": "https://dashboard.mintlify.com"
     }
   },
@@ -122,6 +180,32 @@
       "x": "https://x.com/mintlify",
       "github": "https://github.com/mintlify",
       "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    },
+    "links": [
+      {
+        "items": [
+          {
+            "label": "Imprint / Legal",
+            "href": "https://contentful.com"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "label": "Privacy",
+            "href": "https://contentful.com"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "label": "Your Privacy Choices",
+            "href": "https://contentful.com"
+          }
+        ]
+      }
+    ]
   }
 }

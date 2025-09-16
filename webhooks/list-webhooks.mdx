@@ -1,0 +1,23 @@
+---
+title: "List webhooks in a space"
+description: "An introduction to viewing webhooks configured in a space."
+sidebarTitle: "List webhooks in a space"
+---
+
+### List webhooks within the web app
+
+The _Webhooks_ overview screen shows a list of the most recent webhook calls made, their status, possible errors, and the target URL (a Slack url in the below example).
+
+![Overview of webhooks](#{ASSETS}/images/webhooks-list.png)
+
+### List webhooks via API
+
+To list all webhooks endpoint in a space, use the following sample code:
+
+```bash
+curl -X GET "https://api.contentful.com/spaces/<SPACE_ID>/webhook_definitions"
+-H "Authorization: Bearer <API_KEY>"
+-H "Content-Type: application/vnd.contentful.management.v1+json"
+```
+
+[Find more details on listing the webhooks in a space with the API in our reference docs](/developers/docs/references/content-management-api/#/reference/webhooks/webhooks-collection/get-all-webhooks-of-a-space).

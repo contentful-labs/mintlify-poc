@@ -1,0 +1,29 @@
+---
+title: "Activity log"
+description: "An introduction to the Activity Log for Webhook observability."
+sidebarTitle: "Activity log"
+---
+
+### View the webhook activity log within the web app
+
+Click the _View details_ link of any webhook events in the overview screen to get a detailed activity log, including the JSON and remote server response.
+
+![Activity log for webhooks](#{ASSETS}/images/webhooks-activity-log.png)
+
+![Detailed activity log of a webhook](#{ASSETS}/images/webhooks-log-details.png)
+
+<div class="note">
+<strong>Note</strong>: A maximum of 500 log entries are stored for each webhook. When this number is reached, the oldest entry is automatically deleted.
+</div>
+
+### Get the status of recent webhooks via API
+
+The following endpoint will return the status of recent calls made by a webhook and any errors.
+
+```bash
+curl -X GET "https://api.contentful.com/spaces/<SPACE_ID>/webhooks/<WEBHOOK_ID>/calls"
+-H "Authorization: Bearer <API_KEY>"
+-H "Content-Type: application/vnd.contentful.management.v1+json"
+```
+
+[Find more details on getting the activity log of a webhook with the API in our reference docs](/developers/docs/references/content-management-api/#/reference/webhook-calls).

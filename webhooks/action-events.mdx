@@ -1,0 +1,56 @@
+---
+title: "Action events"
+description: "Reference for action events which trigger webhooks."
+sidebarTitle: "Action events"
+---
+
+## Action Events
+
+### Release
+
+Releases are containers for multiple entries and assets that can have an action taken upon all referenced content. Note that release webhooks are called when the release entity itself is changed or deleted, not when an action is taken (see release actions)
+
+- `create`: emitted after the release has been successfully created
+- `save`: emitted after the release has been successfully changed
+- `delete`: emitted after a release has been deleted
+- `archive`: emitted after a release has been archived
+- `unarchive`: emitted after a release has been unarchived
+
+Release webhooks can be used for triggering validation flows when entities are added or removed from a release, or tracking new or deleted releases
+
+Learn more about releases in the [releases reference](/developers/docs/references/content-management-api/#/reference/releases)
+
+### Release actions
+
+Release actions are a specific attempt to take an action on a release, such as publish or unpublish.
+
+- `create`: emitted after the release action has been created, but may **not** have started yet
+- `execute`: emitted after the release action has been executed, regardless of outcome. The entity emitted will show the resulting status
+
+Release action webhooks can be used for delaying a build or checking the outcome of a release action once it has been taken, including validation errors received during execution.
+
+Learn more about release actions in the [releases reference](/developers/docs/references/content-management-api/#/reference/releases/release-actions)
+
+### Bulk actions
+
+Bulk actions are one-time entities containing a collection of entries and assets and an action to apply, such as publishing a collection of entries and assets from the reference tree.
+
+- `create`: emitted after the bulk action has been successfully created, but may **not** have started yet
+- `execute`: emitted after the bulk action has been executed, regardless of outcome. The payload emitted will include the resulting status
+
+Bulk action webhooks can be used for delaying a build or checking the outcome of a bulk action once it has been taken, including validation errors received during execution.
+
+Learn more about bulk actions in the [bulk actions reference](/developers/docs/references/content-management-api/#/reference/bulk-actions)
+
+### Scheduled actions
+
+Scheduled actions are actions that are taken on behalf of a user at a future date.
+
+- `create`: emitted after the scheduled action has been created, but may **not** have started yet
+- `save`: emitted after the scheduled action has been successfully changed
+- `execute`: emitted after the scheduled action has been executed, regardless of outcome. The entity emitted will show the resulting status
+- `delete`: emitted after a scheduled action has been deleted
+
+Scheduled action webhooks can be used for keeping external systems apprised of changes to upcoming type of events or for emitting chatbot messages in the case of a failed scheduled action execution.
+
+Learn more about scheduled actions in the [scheduled actions reference](/developers/docs/references/content-management-api/#/reference/scheduled-actions)

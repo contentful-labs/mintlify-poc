@@ -1,0 +1,169 @@
+---
+title: "Configure a webhook"
+description: "An introduction to creating and configuring a Webhook."
+sidebarTitle: "Configure a webhook"
+---
+
+### Configuring a webhook within the web app
+
+In the top navigation bar, open _Settings_ → _Webhooks_. Click _Add webhook_, configure the remote host and click _Save_.
+
+![Creating a new webhook](/images/webhook-new-webhook.png)
+
+You can configure the specific events that trigger a webhook at the bottom of the screen.
+
+![Configure triggering events](/images/webhook-events.png)
+
+<div class="note">
+<strong>Note</strong>: Per <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions">W3C RFC-9110</a>, <code><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/GET">GET</a></code> and <code><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/DELETE">DELETE</a></code> requests should not have a request body. As such, Contentful <strong>webhook calls do not contain a body for these request methods</strong>.
+</div>
+
+### Configuring a webhook via API
+
+Create a webhook by sending the settings for the webhook in a request body with your API call, for example, the following the http request:
+
+```bash
+curl -X POST "https://api.contentful.com/spaces/<SPACE_ID>/webhook_definitions"
+  -d '{"url": "<URL>", "name": "foo", "topics": ["*.*"], , "filters": []}'
+  -H 'Authorization: Bearer <API_KEY>'
+  -H 'Content-Type: application/vnd.contentful.management.v1+json'
+```
+
+This webhook request will create a new webhook url in the specified space with a `url`, `name`, it will trigger for all `topics` and will not apply any filtering constraints.
+
+### Topics
+
+When creating a webhook you have to explicitly specify for which changes on your content (topics) you want your webhook called.
+
+For example, your webhook could be called when:
+
+- Any content (of any type) is published.
+- Assets are deleted.
+
+These filters have to be translated into a list of `[Type].[Action]` pairs, `[*.publish, Asset.delete, Entry.*]`, and included in the payload that defines the webhook.
+
+`*` is a wildcard character that can be used in place of any action or type. The combination `*.*` is also valid and means that your webhook is subscribed to all actions across all types.
+
+<div class="note">
+<strong>Note</strong>: Using <code>*</code> allows your webhook to be called for future actions or types that didn't exist when the webhook was created or updated.
+<a href="/developers/docs/references/content-management-api/#/reference/search-parameters/create-a-webhook">Find more details on creating a webhook with the API in our reference docs</a>.
+</div>
+
+### Headers
+
+By default, all webhooks will contain the following headers
+
+| Header Name                 | Value                                           |
+| --------------------------- | ----------------------------------------------- |
+| `X-Contentful-Topic`        | `ContentManagement.[Type].[Action]`             |
+| `X-Contentful-Webhook-Name` | Webhook's name                                  |
+| `Content-Type`              | `application/vnd.contentful.management.v1+json` |
+
+Additionally, extra headers may be sent to provide extra context, such as which scheduled action or bulk action triggered the action. A summary of these headers can be found in the [webhooks](/developers/docs/references/content-management-api/#headers) section in the reference documentation of the Content Management API.
+
+### Filters
+
+The webhook definition holds a `filters` property. Filtering is a second step after defining the `topics`. Typical use cases for filtering are enabling a webhook only for a specific environment ID or entry ID. Without a filter, a webhook with the topic `Entry.publish` is triggering for all entries in the `master` environment of a space. By applying a filter we could make the webhook only trigger for specific entry IDs within a specific environment.
+
+A filter is defined by adding one or multiple parameter constraints to the webhook definition. The constraints consist of:
+
+A property of the entity to evaluate:
+
+- `sys.id`
+- `sys.environment.sys.id`
+- `sys.contentType.sys.id` (for Entry events only)
+- `sys.createdBy.sys.id` (not applicable to Unpublish and Delete events)
+- `sys.updated.sys.id` (not applicable to Unpublish and Delete events)
+- `sys.deletedBy.sys.id` (only applicable to Unpublish and Delete events)
+
+An operator / negation of an operator:
+
+- `equals`
+- `in`
+- `regex`
+
+An argument for selected operator:
+
+- string value (e.g. `"myEntryId"`) for `equals`
+- array of strings (e.g. `["idOne", "idTwo"]`) for `in`
+- definition of a pattern (e.g. `{"pattern": "^ci-.+$"}` for `regexp`)
+
+So for example filtering a webhook to only trigger for two specific environments of ID `master` or `development`, the constraint would look like:
+
+```json
+{
+  ...,
+  "filters": [
+    {
+      "in": [
+        {
+          "doc": "sys.environment.sys.id"
+        },
+        [
+          "master",
+          "development"
+        ]
+      ]
+    }
+  ]
+}
+```
+
+Multiple constraints are connected with logical `AND`. Let's narrow the above's filter further down so it only triggers for an entry of ID `foo` in environments with ID `master` or `development`:
+
+```json
+{
+  ...,
+  "filters": [
+    {
+      "in": [
+        {
+          "doc": "sys.environment.sys.id"
+        },
+        [
+          "master",
+          "development"
+        ]
+      ]
+    },
+    {
+      "equals": [
+        {
+          "doc": "sys.id"
+        },
+        "foo"
+      ]
+    }
+  ]
+}
+```
+
+The last example uses a regular expression to match all environments that have an ID which uses a common prefix of `ci-` followed by 3-5 lowercase characters (e.g. `ci-foo`, `ci-bar` but not `ci-foobar`):
+
+```json
+{
+  ...,
+  "filters": [
+    {
+      "regexp": [
+        {
+          "doc": "sys.environment.sys.id"
+        },
+        {
+          "pattern": "^ci-[a-z]{3,5}$"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Please note that filtering is done on the literal value of the path. It means that if you access your content through multiple environment aliases, you need to include all of them when attempting to filter based on `sys.environment.sys.id`.
+
+For a full reference on how filters are defined please refer to the [webhooks](/developers/docs/references/content-management-api/#filtering-webhook-calls) section in the reference documentation of the Content Management API.
+
+### Disabling a webhook
+
+Sometimes you may need to disable a webhook. Perhaps the web service that should receive webhooks is still under development, or perhaps you want to avoid receiving webhook calls whilst you perform a data migration in Contentful.
+
+The webhook configuration UI provides a toggle that can be used to disable or enable a webhook. It is also possible to disable a webhook through the api. For more details about webhooks see the [Webhook API guide](/developers/docs/references/content-management-api/#/reference/webhooks).

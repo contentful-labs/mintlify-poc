@@ -1,0 +1,222 @@
+---
+title: "Webhook transformations"
+description: "An introduction to webhook transformations."
+sidebarTitle: "Webhook transformations"
+---
+# Overview
+
+By default every webhook call:
+
+- uses the `POST` HTTP method
+- has the `Content-Type` header set to `application/vnd.contentful.management.v1+json`
+- does not have the `Content-Length` header set
+- sends a predefined body depending on the triggering event (as described above)
+
+If you control the code of your webhook receiver you can respond to the default webhook call appropriately by implementing a custom logic in your receiver. The situation is different if you try to call an API you don't control with a webhook: most likely the default webhook payload won't adhere to the format expected by the API.
+
+The `transformation` property of a webhook definition allows you to define:
+
+- a custom HTTP method
+- a custom `Content-Type` header
+- if automatically computed, a `Content-Length` header should be included.
+- a custom webhook call body that may or may not make use of the default webhook body.
+
+<div class="note">
+<strong>NOTE</strong>:The <code>transformation</code> property is an optional object containing the following properties. None of these properties are required.
+</div>
+
+`transformation.method` can be one of:
+
+- `POST` (default)
+- `GET`
+- `PUT`
+- `PATCH`
+- `DELETE`
+
+`transformation.contentType` can be one of:
+
+- `application/vnd.contentful.management.v1+json` (default)
+- `application/vnd.contentful.management.v1+json; charset=utf-8`
+- `application/json`
+- `application/json; charset=utf-8`
+- `application/x-www-form-urlencoded`
+- `application/x-www-form-urlencoded; charset=utf-8`
+
+Using the last two options will convert the JSON body to URL encoded form data.
+
+`transformation.includeContentLength` can be either `true` or `false`. If `true` the `Content-Length` header will be present with its value set to automatically computed byte length of the request body.
+
+`transformation.body` can be any arbitrary JSON data structure. It will be used as the webhook call body.
+It's possible to use values from the original webhook payload in the transformed body. This can be achieved by JSON pointers in the body JSON. Depending on the referenced data either [whole values](#resolving-a-whole-value) or [strings](#using-string-templates) are resolved.
+
+### URL transformation
+
+Webhook URLs can contain JSON pointers that are resolved to values from the original payload. The value resolution always follows the [string template resolution logic](#using-string-templates). For example, a webhook defined as follows will result in a call to `https://my-webhook-endpoint.com/my-entry-1` for an entity with ID `my-entry-1`.
+
+```js
+{
+  "name": "Dynamic URL",
+  "url": "https://my-webhook-endpoint.com/{ /payload/sys/id }"
+}
+```
+
+### Header transformation
+
+Custom header values can contain JSON pointers as described below. This is achieved by JSON pointers that are resolved using the [string template resolution logic](#using-string-templates).
+
+The following header definition
+```js
+{
+  ...,
+  "headers": [
+    { "key": "X-CTFL-Entity-ID", "value": "{ /payload/sys/id }" },
+    { "key": "X-CTFL-Entity-Type", "value": "{ /payload/sys/type }" }
+  ]
+}
+```
+
+will result in two headers on the actual webhook call if the webhook was triggered by a change of entry 42:
+```text
+X-CTFL-Entity-ID: 42
+X-CTFL-Entity-Type: Entry
+```
+
+Secret and HTTP Basic Auth headers are not transformed. Also, the header keys are not transformed.
+
+### Resolution strategies
+
+#### Resolving a whole value
+
+1. In your data structure, introduce a string value that starts with `{` and ends with `}` in a place you want to resolve the original value
+2. In between curly braces put an absolute [JSON pointer](https://tools.ietf.org/html/rfc6901) to the property you want to resolve; the original webhook body is stored in the `payload` top-level namespace
+3. The string value containing a pointer will be replaced with the resolved value
+
+For example, given the following original payload:
+
+```js
+{
+  "sys" {
+    "id": "entry-id"
+    "type": "Entry"
+  },
+  "fields": {
+    "title": {
+      "en-US": "hello world"
+    }
+  }
+}
+```
+
+And the following body transformation:
+
+```js
+{
+  "entryId": "{ /payload/sys/id }",
+  "title": "{ /payload/fields/title }"
+}
+```
+
+Your webhook will be called with:
+
+```js
+{
+  "entryId": "entry-id",
+  "title": {
+    "en-US": "hello world"
+  }
+}
+```
+
+#### Using string templates
+
+1. In your data structure, introduce a string value that contains an absolute [JSON pointer](https://tools.ietf.org/html/rfc6901) to the property you want to resolve, wrapped with `{` and `}`
+2. The original webhook body is stored in the `payload` top-level namespace
+3. JSON pointers will be replaced with resolved values
+4. All values, including complex ones, will be stringified
+
+For example, given the following original payload:
+
+```js
+{
+  "sys": {
+    "id": "entry-id",
+    "type": "Entry"
+  },
+  "fields": {
+    "title": {
+      "en-US": "hello world"
+    }
+  }
+}
+```
+
+And the following body transformation:
+
+```js
+{
+  "entityInfo": "Entity of type { /payload/sys/type } with ID { /payload/sys/id }",
+  "title": "Entity title is { /payload/fields/title/en-US }",
+  "stringified": "Let's try to stringify an object: { /payload/fields/title }"
+}
+```
+
+Your webhook will be called with:
+
+```js
+{
+  "entityInfo": "Entity of type Entry with ID entry-id",
+  "title": "Entity title is hello world",
+  "stringified": "Let's try to stringify an object: {\"en-US\":\"hello world\"}"
+}
+```
+
+### Helpers
+
+In some cases, there can be a need for trimming or slightly modifying certain fields before delivering them to the webhook target. Contentful provides numerous helpers that can be used at the transformation level. For example:
+
+```js
+{
+  "content": "{ first-paragraphs 2 /payload/fields/content/en-US }",
+}
+```
+
+Above-mentioned example limits the `content` field with first two paragraphs. If the content field has more than two paragraphs, the rest of the text gets trimmed. In addition to
+trimming content, helpers are useful in modifying or refining content. Following is another transformation, using the `strip-stop-words` helper:
+
+```js
+{
+  "keywords": "{ strip-stop-words /payload/fields/content }",
+}
+```
+
+The above transform filters out stop words and delivers only the keywords in the `content` field. For example:
+
+```text
+Art is the expression or application of human creative skill and imagination
+```
+
+becomes:
+
+```text
+art expression application human creative skill imagination
+```
+
+Refer to the table below to see the full list of available functions:
+
+| Helper name | Parameter | Description |
+|-------|-------------------------|-----------|
+| first-chars | Number | Selects first `n` characters of the field.<br/><br/>Example: `{ first-chars 6 /payload/fields/content/en-US }` |
+| first-words | Number | Selects first `n` words of the field.<br/><br/>Example: `{ first-words 12 /payload/fields/content/en-US }` |
+| first-paragraphs | Number | Selects first `n` paragraphs of the field.<br/><br/>Example: `{ first-paragraphs 3 /payload/fields/content/en-US }` |
+| strip-stop-words | - | Strip out stop words (only English is supported).<br/><br/>Example: `{ strip-stop-words /payload/fields/content/en-US }` |
+| strip-markdown | - | Strip out Markdown markup.<br/><br/>Example: `{ strip-markdown /payload/fields/content/en-US }` |
+| stringify | - | Stringify the value pointed to.<br/><br/>Example: `{ stringify /payload/fields }` |
+
+
+### Transformation context
+
+When transforming request body, URL, and headers, JSON pointers are used to resolve values. Values are resolved from a context object. Currently the context object has the following properties:
+
+- `payload` contains the original webhook payload
+- `topic` is a string containing the webhook topic
+- `user` is a stripped-down version of a `User` entity for the user who executed action triggering the webhook call; the only available pointer is `{ /user/sys/id }`

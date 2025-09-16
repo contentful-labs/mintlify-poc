@@ -1,0 +1,70 @@
+---
+title: "Webhook filters"
+description: "An introduction to webhook filters."
+sidebarTitle: "Webhook filters"
+---
+# Overview
+Webhooks in Contentful can be tailored so you only receive calls for the events you care about. You can do this in two ways:
+
+- selection of a triggering event(s)
+- filtering based on properties of a webhook payload
+
+An event is a combination of the entity type and an action performed on it. For example the `Entry.save` event happens when an
+entry is updated with the CMA. `ContentManagement.Entry.save` is the topic for this event.
+
+To select which events should trigger a webhook call, set the `topics` property of a webhook to one or more event names. You can use
+a wildcard character `*` to indicate that all entity types or actions should cause a webhook call. Please note that if you use the
+wildcard character and we add new entity types or actions, your webhook receiver will be called with new events.
+
+Possible values for `topics` are:
+
+- `["*.*"]` will trigger a webhook call for all the supported events in Contentful
+- `["Entry.*"]` will trigger a webhook call for all actions performed on entries
+- `["*.save"]` will trigger a webhook call when any of supported entities is saved
+- `["Entry.save", "Entry.delete"]` will trigger a webhook call only for the events listed
+
+Once triggering events are selected, webhook calls can be narrowed down further using webhook payload filtering.
+
+You can filter on the following webhook payload properties:
+- `sys.id` - entity ID
+- `sys.environment.sys.id` - environment ID
+- `sys.contentType.sys.id` - content type ID (applicable only to Entry events)
+- `sys.createdBy.sys.id` - User ID, created by (not applicable to Unpublish and Delete events)
+- `sys.updated.sys.id` - User ID, updated by (not applicable to Unpublish and Delete events)
+- `sys.deletedBy.sys.id` - User ID, deleted by (only applicable to Unpublish and Delete events)
+
+These properties can be used as `doc` in the filters. 
+
+## Available Filters
+Operator | Example | Behavior
+---------|---------|---------
+equality | `{"equals": [{"doc": "sys.id"}, "main_nav"]}` | will trigger only for entity with ID `main_nav`
+negation of equality | `{"not": {"equals": [{"doc": "sys.id"}, "main_nav"]}}` | will trigger for all entities but entity with ID `main_nav`
+inclusion | `{"in": [{"doc": "sys.environment.sys.id"}, ["qa", "staging"]]}` | will trigger if environment of an entity is either `qa` or `staging`
+negation of inclusion | `{"not": {"in": [{"doc": "sys.environment.sys.id"}, ["qa", "staging"]]}}` | will trigger if environment of an entity is neither `qa` nor `staging`
+regular expression | `{"regexp": [{"doc": "sys.environment.sys.id"}, {"pattern": "^ci-.+$"}]}` | will trigger for all environments prefixed with `ci-`
+negation of regular expression | `{"not": {"regexp": [{"doc": "sys.environment.sys.id"}, {"pattern": "^ci-.+$"}]}}` | will trigger for all environments that are not prefixed with `ci-`
+
+The `filters` property of a webhook holds zero or more filters in an array. While deciding if a webhook should be called, all
+filters are joined with logical `AND`.
+
+If there is no value for the `filters` property (or it is `null`) then by default a webhook will be triggered only in the `master`
+environment.
+
+Combining all the mechanisms together we can achieve fine-grained webhook calls. The following webhook will be triggered only for
+(un)publish actions performed on entries with IDs `main_nav` or `footer_nav` in all environments prefixed with `test-`:
+
+```json
+{
+  "name": "My webhook",
+  "url": "https://my-webhook-receiver.com/ping",
+  "topics": [
+    "Entry.publish",
+    "Entry.unpublish"
+  ],
+  "filters": [
+    {"in": [{"doc": "sys.id"}, ["main_nav", "footer_nav"]]},
+    {"regexp": [{"doc": "sys.environment.sys.id"}, {"pattern": "^test-.+$"}]}
+  ]
+}
+```

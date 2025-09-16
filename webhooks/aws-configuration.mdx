@@ -1,0 +1,37 @@
+---
+title: "AWS Webhook configuration"
+description: "An introduction to integrating a webhook with AWS."
+sidebarTitle: "AWS Webhook configuration"
+---
+# Overview
+
+<div class="note">
+<strong>NOTE</strong>:
+AWS Webhook Integration is available on specific pricing plans.
+<a href="/contact/sales/">Contact us</a>
+if you are interested in learning more about this feature.
+</div>
+
+# Overview
+[AWS](https://aws.amazon.com/) offers over 100 cloud services, with the most prominent examples being data stores (S3, DynamoDB), serverless engines (Lambda), queuing systems (SQS) and many more.
+
+Most AWS services use [AWS Signature Version 4](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html) to authenticate requests to their APIs. Computing the signature requires a prepared canonical request (a request without the `Authorization` header) and AWS credentials. They are all used as the input for the AWS Signature Version 4 algorithm. Its output is a value that should be used as the `Authorization` header.
+
+The headers and body values of a webhook are likely changing between individual requests. This means the canonical request will differ and previously computed Authorization headers will be invalid. The proxy that the AWS Webhook Integration is using will re-compute the signature for every request.
+
+If you have AWS Webhook Integration enabled you can use its proxy within a webhook so all requests will be automatically signed. You can either start from a webhook template or follow these steps to configure it manually:
+
+1. Create a webhook performing a canonical AWS request to the service you use. All standard features available for webhooks are available.
+2. Replace `amazonaws.com` with `awsproxy.contentful.com` in the webhook URL.
+3. Set a `X-Contentful-AWS-Proxy-Key-Id` header with your AWS Access Key ID.
+4. Set a `X-Contentful-AWS-Proxy-Secret` header with your AWS Secret Access Key. 
+<div class="note">
+<strong>Important</strong>: Make sure it's marked as secret.
+</div>
+5. **Optional**: you can set a `X-Contentful-AWS-Proxy-Content-Type` header to a custom `Content-Type` value if a service being called requires it (for example `application/x-amz-json-1.0`).
+
+The proxy will automatically sign all requests using the credentials provided. Credentials must have IAM role assigned allowing to perform selected action.
+
+<div class="note">
+<strong>NOTE</strong>: The proxy is an internal system and cannot be accessed from the public Internet. Only our webhook system can use this proxy.
+</div>

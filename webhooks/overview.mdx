@@ -1,0 +1,84 @@
+---
+title: "Overview"
+description: "Webhooks are HTTP callbacks which can be used to send notifications when data in Contentful is changed."
+sidebarTitle: "Overview"
+---
+
+Webhooks are HTTP callbacks which can be used to send notifications when data in Contentful is changed, allowing external systems to react to changes to do things such as trigger a website rebuild or send a notification to a chat application.
+
+<div class="note">
+<strong>NOTE</strong>:
+For information on using webhooks with the Content Management API, see the <a href="/developers/docs/references/content-management-api/#/reference/webhooks">webhook CMA documentation</a>.
+</div>
+
+### Webhook payloads
+You can view a webhook payload in an entity JSON object. To view an entity JSON object for:
+- **Content type** - Open the JSON Preview in the [content type editor](/help/configure-content-type/).
+- **Entry** - An entry JSON can be previewed with the [JSON Viewer](/marketplace/app/json-viewer/) app.
+
+### Environment aliases and webhooks
+
+Webhooks can be triggered for an environment alias using the `filters` property of a
+webhook just like environments. Webhooks only trigger for a given environment alias if it is used via that alias. Example: for a webhook set to trigger on the `master` environment alias only
+
+- Sending a `PUT spaces/<space-id>/entries/my-blog-post` would trigger the webhook
+
+- Sending a `PUT spaces/<space-id>/environments/master/entries/my-blog-post` would trigger the webhook
+
+- Sending a `PUT spaces/<space-id>/environments/environment-to-serve/entries/my-blog-post` would not trigger the webhook
+
+Please refer to the webhooks [reference](/developers/docs/references/content-management-api/#/reference/webhooks) for more details.
+
+You can also set up webhooks to fire on environment alias events. For example, when an alias is created, updated or deleted.
+
+### Filtering
+
+Sometimes it is necessary to filter webhooks based on the properties of the entity that triggered the webhook. The most common examples are:
+
+- filter webhooks by environment ID (e.g. only trigger the pre-release test suite on a CI service for the environment with ID `staging`)
+- filter webhooks by entity ID (e.g. only trigger for a specific entry, asset or content type ID)
+- filter webhooks by content type ID (e.g. only trigger for entries of a specific content type ID)
+
+<div class="note">
+<strong>Note</strong>: If a filter is evaluating a property that is not present on the entity, it will evaluate to <code>false</code> and not trigger the webhook. E.g. a webhook for topics <code>Entry.publish</code> and <code>Asset.publish</code> filters on a specific content type ID. As assets don't have a content type, all webhooks which are triggered by <code>Asset.publish</code> will be muted by the filter.
+</div>
+
+### Retry Policy
+
+Contentful webhooks using a default retry policy will attempt delivery of a webhook and, if it fails with a 429 or 5xx response, re-attempt delivery up to 2 additional times with approximately a 30 second delay between each attempt. This results in a total of 3 attempts over a 1 minute window; after which it is considered failed.
+
+### Idempotency
+
+Although Contentful makes a best effort attempt to ensure that webhooks are only delivered successfully exactly once for a given event, it is possible on rare occasions in the case of server failure that a webhook may be sent more than once for the same event. It is recommended that you configure your webhook consumer to be idempotent, meaning that it will do work exactly once for a given event, even if it receives duplicate webhook requests. To accomplish this, use the `X-Contentful-Idempotency-Key` header, a unique SHA256 hash of the webhook event, to deduplicate requests sent to your servers.
+
+### Timeouts
+
+Webhook requests will timeout if the recipient server does not respond within a maximum of 30 seconds. A webhook request that times out will be considered failed and will not be retried. Because of this, it is recommended that processing of webhooks be done asynchronously.
+
+### `save` and `auto_save` webhooks
+
+The Contentful web application automatically saves changes in all documents you are working on. Contentful considers documents edited in the last 5 seconds as active and uses that information to call the webhook integrations you have configured.
+
+If you edit an entry in the web app for one minute, and you have a webhook configured to be called for `auto_save` actions, the defined webhook will be sent 12 times (60 seconds divided by 5 seconds).
+
+When you call the `sdk.entry.save()` method [provided by the App SDK](/developers/docs/extensibility/app-framework/sdk/#saving-an-entry) an `auto_save` webhook is sent.
+
+If you update [an entry or asset via the Content Management API](/developers/docs/references/content-management-api/#/reference/entries/entry) or an App, the `save` webhook is sent.
+
+### Customizing webhook calls
+
+By default every webhook call:
+
+- uses the HTTP `POST` request method
+- has the `Content-Type` header set to `application/vnd.contentful.management.v1+json`
+- sends a predefined body depending on the triggering event
+
+If you want to change any of the aforementioned webhook properties you can use a mechanism called "webhook transformation". [Navigate to the webhook transformation documentation](/developers/docs/webhooks/transformations/) for more details. All customizable properties can be set with both the API and the web app.
+
+<div class="note">
+<strong>Note</strong>: Per <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions">W3C RFC-9110</a>, <code><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/GET">GET</a></code> and <code><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/DELETE">DELETE</a></code> requests should not have a request body. As such, Contentful <strong>webhook calls do not contain a body for these request methods</strong>.
+</div>
+
+### Local testing
+
+For local testing we recommend to use [webhook.site](https://webhook.site/) to inspect the sent webhooks or [ngrok](https://ngrok.com/) to build webhook consumers on your developer machine. ngrok also [provides a guide](https://ngrok.com/docs/integrations/contentful/webhooks/) on how to use ngrok to integrate your localhost app with Contentful by using Webhooks.
