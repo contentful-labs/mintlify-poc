@@ -1,0 +1,760 @@
+# This file is auto generated, do not edit manually
+info:
+  title: Contentful Faux API
+  version: 0.0.1
+  description: A faux API against real Contentful endpoints to generate OpenAPI specs
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ContentTypeSchema:
+      type: object
+      properties:
+        sys:
+          type: object
+          properties:
+            space:
+              $ref: "#/components/schemas/SpaceLinkSchema"
+            id:
+              type: string
+            type:
+              $ref: "#/components/schemas/ContentTypeLinkSchema"
+            createdAt:
+              $ref: "#/components/schemas/IsoDateTimeSchema"
+            updatedAt:
+              $ref: "#/components/schemas/IsoDateTimeSchema"
+            environment:
+              $ref: "#/components/schemas/EnvironmentLinkSchema"
+            publishedVersion:
+              type: number
+            publishedAt:
+              $ref: "#/components/schemas/IsoDateTimeSchema"
+            firstPublishedAt:
+              $ref: "#/components/schemas/IsoDateTimeSchema"
+            createdBy:
+              $ref: "#/components/schemas/UserLinkSchema"
+            updatedBy:
+              $ref: "#/components/schemas/UserLinkSchema"
+            publishedCounter:
+              type: number
+            version:
+              type: number
+            publishedBy:
+              $ref: "#/components/schemas/UserLinkSchema"
+          required:
+            - space
+            - id
+            - type
+            - createdAt
+            - updatedAt
+            - environment
+            - createdBy
+            - updatedBy
+            - publishedCounter
+            - version
+          additionalProperties: false
+        displayField:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentTypeFieldSchema"
+      required:
+        - sys
+        - displayField
+        - name
+        - description
+        - fields
+      additionalProperties: false
+    ContentTypeFieldItemsSchema:
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/ContentTypeFieldTypesSchema"
+        validations:
+          type: array
+          items: {}
+        linkType:
+          type: string
+          const: Asset
+      required:
+        - type
+        - validations
+      additionalProperties: false
+    ContentTypeFieldSchema:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          $ref: "#/components/schemas/ContentTypeFieldTypesSchema"
+        localized:
+          type: boolean
+        required:
+          type: boolean
+        disabled:
+          type: boolean
+        omitted:
+          type: boolean
+        items:
+          type: object
+          properties:
+            type:
+              $ref: "#/components/schemas/ContentTypeFieldItemsSchema"
+            linkType:
+              type: string
+              enum:
+                - Asset
+                - Entry
+            validations:
+              type: array
+              items: {}
+          required:
+            - type
+          additionalProperties: false
+        validations:
+          type: array
+          items: {}
+        linkType:
+          type: string
+          const: Asset
+      required:
+        - id
+        - name
+        - type
+        - validations
+      additionalProperties: false
+    ContentTypeFieldTypesSchema:
+      type: string
+      enum:
+        - Symbol
+        - Text
+        - Number
+        - Integer
+        - Date
+        - Boolean
+        - Location
+        - Object
+        - RichText
+        - Array
+        - Link
+        - ResourceLink
+    IsoDateTimeSchema:
+      type: string
+      format: date-time
+    SpaceLinkSchema:
+      type: object
+      properties:
+        sys:
+          type: object
+          properties:
+            type:
+              type: string
+              const: Link
+            linkType:
+              type: string
+              const: Space
+            id:
+              type: string
+          required:
+            - type
+            - linkType
+            - id
+          additionalProperties: false
+      required:
+        - sys
+      additionalProperties: false
+    EntryLinkSchema:
+      type: object
+      properties:
+        sys:
+          type: object
+          properties:
+            type:
+              type: string
+              const: Link
+            linkType:
+              type: string
+              const: Entry
+            id:
+              type: string
+          required:
+            - type
+            - linkType
+            - id
+          additionalProperties: false
+      required:
+        - sys
+      additionalProperties: false
+    EnvironmentLinkSchema:
+      type: object
+      properties:
+        sys:
+          type: object
+          properties:
+            type:
+              type: string
+              const: Link
+            linkType:
+              type: string
+              const: Environment
+            id:
+              type: string
+          required:
+            - type
+            - linkType
+            - id
+          additionalProperties: false
+      required:
+        - sys
+      additionalProperties: false
+    ContentTypeLinkSchema:
+      type: object
+      properties:
+        sys:
+          type: object
+          properties:
+            type:
+              type: string
+              const: Link
+            linkType:
+              type: string
+              const: ContentType
+            id:
+              type: string
+          required:
+            - type
+            - linkType
+            - id
+          additionalProperties: false
+      required:
+        - sys
+      additionalProperties: false
+    UserLinkSchema:
+      type: object
+      properties:
+        sys:
+          type: object
+          properties:
+            type:
+              type: string
+              const: Link
+            linkType:
+              type: string
+              const: User
+            id:
+              type: string
+          required:
+            - type
+            - linkType
+            - id
+          additionalProperties: false
+      required:
+        - sys
+      additionalProperties: false
+    TagLinkSchema:
+      type: object
+      properties:
+        sys:
+          type: object
+          properties:
+            type:
+              type: string
+              const: Link
+            linkType:
+              type: string
+              const: Tag
+            id:
+              type: string
+          required:
+            - type
+            - linkType
+            - id
+          additionalProperties: false
+      required:
+        - sys
+      additionalProperties: false
+    TaxonomyConceptLinkSchema:
+      type: object
+      properties:
+        sys:
+          type: object
+          properties:
+            type:
+              type: string
+              const: Link
+            linkType:
+              type: string
+              const: TaxonomyConcept
+            id:
+              type: string
+          required:
+            - type
+            - linkType
+            - id
+          additionalProperties: false
+      required:
+        - sys
+      additionalProperties: false
+    EntryFieldsSchema:
+      type: object
+      additionalProperties:
+        type: object
+        additionalProperties:
+          anyOf:
+            - type: string
+            - type: number
+            - type: boolean
+            - type: array
+              items:
+                type: string
+            - type: array
+              items:
+                $ref: "#/components/schemas/EntryLinkSchema"
+            - type: array
+              items:
+                type: object
+                properties:
+                  sys:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        const: Link
+                      linkType:
+                        type: string
+                        const: Asset
+                      id:
+                        type: string
+                    required:
+                      - type
+                      - linkType
+                      - id
+                    additionalProperties: false
+                required:
+                  - sys
+                additionalProperties: false
+            - $ref: "#/components/schemas/EntryLinkSchema"
+            - $ref: "#/components/schemas/EntryFieldsSchema/additionalProperties/additionalPr\
+                operties/anyOf/5/items"
+            - type: object
+              properties:
+                nodeType:
+                  type: string
+                  const: document
+                data:
+                  type: object
+                  additionalProperties: {}
+                content:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      nodeType:
+                        type: string
+                        const: paragraph
+                      data:
+                        type: object
+                        additionalProperties: {}
+                      content:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            nodeType:
+                              type: string
+                              const: text
+                            value:
+                              type: string
+                            marks:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                required:
+                                  - type
+                                additionalProperties: true
+                            data:
+                              type: object
+                              additionalProperties: {}
+                          required:
+                            - nodeType
+                            - value
+                            - marks
+                            - data
+                          additionalProperties: false
+                    required:
+                      - nodeType
+                      - data
+                      - content
+                    additionalProperties: false
+              required:
+                - nodeType
+                - data
+                - content
+              additionalProperties: false
+            - type: object
+              properties:
+                lon:
+                  type: number
+                lat:
+                  type: number
+              required:
+                - lon
+                - lat
+              additionalProperties: false
+            - type: object
+              additionalProperties: {}
+            - {}
+    EntrySchema:
+      type: object
+      properties:
+        metadata:
+          type: object
+          properties:
+            tags:
+              type: array
+              items:
+                $ref: "#/components/schemas/TagLinkSchema"
+            concepts:
+              type: array
+              items:
+                $ref: "#/components/schemas/TaxonomyConceptLinkSchema"
+          required:
+            - tags
+          additionalProperties: false
+        sys:
+          type: object
+          properties:
+            space:
+              $ref: "#/components/schemas/SpaceLinkSchema"
+            id:
+              type: string
+            type:
+              type: string
+              const: Entry
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+            environment:
+              $ref: "#/components/schemas/EnvironmentLinkSchema"
+            publishedVersion:
+              type: number
+            publishedAt:
+              type: string
+              format: date-time
+            firstPublishedAt:
+              type: string
+              format: date-time
+            createdBy:
+              $ref: "#/components/schemas/UserLinkSchema"
+            updatedBy:
+              $ref: "#/components/schemas/UserLinkSchema"
+            publishedCounter:
+              type: number
+            version:
+              type: number
+            publishedBy:
+              $ref: "#/components/schemas/UserLinkSchema"
+            fieldStatus:
+              type: object
+              properties:
+                "*":
+                  type: object
+                  additionalProperties:
+                    type: string
+                    enum:
+                      - draft
+                      - changed
+                      - published
+              required:
+                - "*"
+              additionalProperties: false
+            automationTags:
+              type: array
+              items:
+                $ref: "#/components/schemas/TagLinkSchema"
+            contentType:
+              $ref: "#/components/schemas/ContentTypeLinkSchema"
+            urn:
+              type: string
+              format: uri
+          required:
+            - space
+            - id
+            - type
+            - createdAt
+            - updatedAt
+            - environment
+            - createdBy
+            - updatedBy
+            - version
+            - automationTags
+            - contentType
+            - urn
+          additionalProperties: false
+        fields:
+          $ref: "#/components/schemas/EntryFieldsSchema"
+      required:
+        - sys
+        - fields
+      additionalProperties: false
+tags:
+  - name: contentTypes
+    description: Content Type related endpoints
+  - name: entries
+    description: Entry related endpoints
+servers:
+  - url: https://cdn.contentful.com
+    description: delivery
+  - url: https://preview.contentful.com
+    description: preview
+openapi: 3.1.0
+paths:
+  /spaces/{spaceId}/environments/{environmentId}/content_types/{contentTypeId}:
+    get:
+      description: Get a ContentType by Id
+      summary: get ContentType
+      tags:
+        - contentTypes
+      operationId: getContentType
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          description: ID of the space in form of a string
+          example: yadj1kx9rmg0
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 20
+        - name: environmentId
+          in: path
+          required: true
+          description: ID of the environment in form of a string
+          example: master
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 40
+        - name: contentTypeId
+          in: path
+          required: true
+          description: ID of the content type in form of a string
+          example: blogPost
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/vnd.contentful.management.v1+json:
+              schema:
+                $ref: "#/components/schemas/ContentTypeSchema"
+      x-contentful-docs-target:
+        - delivery
+        - preview
+      x-contentful-sdk-target:
+        - delivery
+        - preview
+      x-contentful-release-stage: stable
+  /spaces/{spaceId}/environments/{environmentId}/content_types:
+    get:
+      description: Get ContentTypes
+      summary: Get ContentTypes
+      tags:
+        - contentTypes
+      operationId: getContentTypes
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          description: ID of the space in form of a string
+          example: yadj1kx9rmg0
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 20
+        - name: environmentId
+          in: path
+          required: true
+          description: ID of the environment in form of a string
+          example: master
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 40
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/vnd.contentful.management.v1+json:
+              schema:
+                type: object
+                properties:
+                  sys:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        const: Array
+                    required:
+                      - type
+                    additionalProperties: false
+                  total:
+                    type: number
+                  skip:
+                    type: number
+                  limit:
+                    type: number
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ContentTypeSchema"
+                required:
+                  - sys
+                  - total
+                  - skip
+                  - limit
+                  - items
+                additionalProperties: false
+      x-contentful-docs-target:
+        - delivery
+        - preview
+      x-contentful-sdk-target:
+        - delivery
+        - preview
+      x-contentful-release-stage: stable
+  /spaces/{spaceId}/environments/{environmentId}/entries/{entryId}:
+    get:
+      description: Retrieve an entry by ID
+      summary: Retrieves an entry by ID
+      tags:
+        - entries
+      operationId: getEntryById
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          description: ID of the space in form of a string
+          example: yadj1kx9rmg0
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 20
+        - name: environmentId
+          in: path
+          required: true
+          description: ID of the environment in form of a string
+          example: master
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 40
+        - name: entryId
+          in: path
+          required: true
+          description: ID of the entry in form of a string
+          example: 1nG4SkuMy0WenQUG6z2aEw
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/vnd.contentful.management.v1+json:
+              schema:
+                $ref: "#/components/schemas/EntrySchema"
+      x-contentful-docs-target:
+        - delivery
+      x-contentful-sdk-target:
+        - delivery
+      x-contentful-release-stage: stable
+  /spaces/{spaceId}/environments/{environmentId}/entries:
+    get:
+      description: Retrieve a collection of entries
+      summary: Retrieves a collection of entries
+      tags:
+        - entries
+      operationId: getEntries
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          description: ID of the space in form of a string
+          example: yadj1kx9rmg0
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 20
+        - name: environmentId
+          in: path
+          required: true
+          description: ID of the environment in form of a string
+          example: master
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 40
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/vnd.contentful.management.v1+json:
+              schema:
+                type: object
+                properties:
+                  sys:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        const: Array
+                    required:
+                      - type
+                    additionalProperties: false
+                  total:
+                    type: number
+                  skip:
+                    type: number
+                  limit:
+                    type: number
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EntrySchema"
+                required:
+                  - sys
+                  - total
+                  - skip
+                  - limit
+                  - items
+                additionalProperties: false
+      x-contentful-docs-target:
+        - delivery
+        - preview
+      x-contentful-sdk-target:
+        - delivery
+        - preview
+      x-contentful-release-stage: stable
+

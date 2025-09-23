@@ -1,0 +1,61 @@
+---
+title: "Domain model"
+description: "Contentful consists of four main entity types: user, organization, space, and environment. This guide walks you through each of these entities."
+---
+
+At its core, a domain model creates a web of interconnected objects. Each object, or entity, within this model is representational and incorporates both behavior and data. Contentful has four main entity types: user, organization, space, and environment. This guide will walk you through each of these entities, as well as their relation to each other.
+
+
+## User
+
+A user is an account used to access the web app and/or Contentful apps to work with content and other data. A user is assigned a role that defines what this user can access and do.
+
+Users can either be invited to an existing organization, or sign up individually. If a user has signed up individually, a new organization is automatically created. In any case, an existing user can always create additional organizations or be invited to other existing organizations.
+
+Users have [management authentication information](/developers/docs/references/authentication/#the-content-management-api) attached to them, such as OAuth applications, OAuth tokens, and personal access tokens.
+
+## Organization
+
+An organization is an entity that serves as a company account and is used for administration. An organization is at the top-level of entities hierarchy and contains one or multiple spaces.
+
+An organization serves as a way to group users. The organization also links the users to a billing entity, so subscriptions and invoices are always tied to the organization, not to a user.
+
+Contentful uses a role-based access model, meaning that you can invite users to join your organization and those users will have different levels of access based on their organization role.
+
+## Space
+
+Space is an entity that contains all content and media for a project and has its own content model.
+
+A space is a child of the organization. It acts as a container for your content and any settings related to that content. Spaces allow you to separate your data according to the structure of your projects or services. You can purchase as many spaces as you need to best structure your data.
+
+ On a space level, the following entities are set up / settings are defined:
+
+- [Environments](#environment) — An environment is an entity within a space that is used to keep a version of the space-specific data and make changes to it in isolation.
+- [Environment aliases](/developers/docs/concepts/environment-aliases/) — An environment alias is an entity that point to a specific target environment and can be switched to a different target environment.
+- [Users](#user) — A user is a member of the parent organization. A user belongs to a space and is assigned with a space role.
+- Teams — A team is an entity that groups users belonging to the same organization and is assigned with a space role.
+- [Roles](/help/space-roles-and-permissions/) — A role is a set of permissions that enable users or teams to perform tasks related to their job.
+- [API keys](/developers/docs/references/authentication/#the-delivery-and-preview-api) — An API key is an authentication key that is necessary to retrieve content through one of Contentful APIs.
+- [Webhooks](/developers/docs/webhooks/overview/) — A webhook is an HTTP callback used to send notifications when data in Contentful is changed.
+- [Content preview](/developers/docs/tutorials/preview/content-preview/) — A link within the entry editor to your pre-production environment that uses the Contentful Preview API to access unpublished content.
+
+## Environment
+
+Environment is an entity within a space that is used to keep a version of the space-specific data and make changes to it in isolation from other environments. A space can contain multiple environments. By default, a space has one master environment. Additionally, multiple sandbox environments can be created. These sandbox environments allow you to modify the data in your space without affecting the data in your master environment.
+
+<div class="note">As long as no sandbox environments have been set up, environments are not visible and the entities and settings listed above appear to be direct children of the space.</div>
+
+Environments contain the following entities:
+
+- [Content model](/help/content-modelling-basics/) — A structure for content that consists of content types and defines connections between them.
+- Content — A total of all entries in the environment.
+- [Media](/help/working-with-media/) — A total of all assets in the environment.
+
+The following settings are defined on an environment level:
+
+- [Locales](/developers/docs/references/content-management-api/#/reference/locales) — A locale is an entity that represents a region-language pair that can be enabled for entries, assets, and fields to create and manage their version in a specific language.
+- [App installations](/developers/docs/extensibility/app-framework/app-installation/) — An app is HTML5 application that extends the functionality of Contentful and can be installed to one or multiple environments simultaneously. Some of the app examples are:
+   - [Tasks](/help/tasks/) — An app developed by Contentful that allows you to assign tasks to your teammates.
+   - [Workflows](/help/workflows-overview/) — An app developed by Contentful that allows you to automate the process of monitoring the different stages of your content creation through notifications and tasks.
+- [Tags](/help/tags/) — A tag is an entity that is used to mark content and media for more granular governance.
+- [Releases](/help/what-is-a-release/) — A release is an entity that is used to group entries and assets for further simultaneous publishing.
