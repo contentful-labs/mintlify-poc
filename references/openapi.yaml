@@ -531,6 +531,24 @@ paths:
     get:
       description: Get a ContentType by Id
       summary: get ContentType
+      x-mint:
+        href: "references/content-types/content-type/get-a-single-content-type"
+        content: "This is custom content"
+      x-codeSamples:
+        - lang: javascript
+          label: Get a single content type
+          source: |
+            const contentful = require('contentful')
+
+            const client = contentful.createClient({
+              space: '<space_id>',
+              environment: '<environment_id>', // defaults to 'master' if not set
+              accessToken: '<content_delivery_api_key>'
+            })
+
+            client.getContentType('<content_type_id>')
+            .then((contentType) => console.log(contentType))
+            .catch(console.error)
       tags:
         - contentTypes
       operationId: getContentType
@@ -757,4 +775,35 @@ paths:
         - delivery
         - preview
       x-contentful-release-stage: stable
+webhooks:
+  onUserCreated:
+    post:
+      summary: Webhook for when a new user is created
+      description: >
+        This webhook is sent to subscribers whenever a new user is created
+        through the `/users` endpoint.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "12345"
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                name:
+                  type: string
+                  example: "Jane Doe"
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: "2025-09-30T12:34:56Z"
+      responses:
+        "200":
+          description: Webhook acknowledged
 

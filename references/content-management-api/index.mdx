@@ -1,0 +1,32 @@
+---
+title: "Content Management API"
+description: "CMA."
+sidebarTitle: "Content Management API"
+---
+
+# Content Management API
+
+Contentful's Content Management API (CMA) helps you manage content in your spaces. To learn more about how to model your content, [read our modeling guide](/developers/docs/concepts/data-model/).
+
+**NOTE**: You can use the CMA to deliver and manage content, but you shouldn't use it to deliver large amounts of content and instead use the [Content Delivery API](/developers/docs/references/content-delivery-api/). The structure of responses from the CMA differs from the CDA as `GET` responses retrieve the entirety of items (i.e. all localized and unpublished content).
+
+
+<div class="note">
+<strong>NOTE</strong>:
+For EU data residency customers, the Base URL is <i>https://api.eu.contentful.com</i>.
+</div>
+
+## Authentication
+
+You access the API securely via HTTPS, and it will be available to clients authenticating with an access token.
+
+Learn about authenticating to the CMA and get your access token from the [developer center](/developers/docs/references/authentication/#the-content-management-api).
+
+## Resource IDs
+
+When creating resources, you can specify an ID or let the API generate a random ID for you. If you choose an ID yourself it must adhere to the following rules:
+
+- It has a length between 1 and 64 characters.
+- It only includes alphanumeric characters, dots `.`, hyphens `-` or underscores `_`.
+
+Represented as a regular expression, this is `/^[a-zA-Z0-9-_.]{1,64}$/`.

@@ -1,101 +1,56 @@
 ---
 title: "Introduction"
 description: "Welcome to the new home for your documentation"
+mode: "custom"
 ---
 
-import { PromoCard } from "/snippets/promo-card.jsx";
+{/* import { PromoCard } from "/snippets/promo-card.jsx"; */}
+import { HeroBanner } from "/snippets/hero-banner.jsx";
 
-## Setting up
+<div class="wrapper">
+<HeroBanner />
 
-Get your documentation site up and running in minutes.
+## Docs by product
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+<CardGroup cols={3}>
+    <Card title="Personalization" href="/"
+      icon={  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
+    <path fill="none" d="M0 0h256v256H0z" />
+    <path
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={16}
+      d="M216 112c0 48.6-56 120-88 120s-88-71.4-88-120a88 88 0 0 1 176 0Z"
+    />
+    <path
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={16}
+      d="M104 144h0a32 32 0 0 1-32-32h0a8 8 0 0 1 8-8h0a32 32 0 0 1 32 32h0a8 8 0 0 1-8 8ZM176 104h0a8 8 0 0 1 8 8v0a32 32 0 0 1-32 32h0a8 8 0 0 1-8-8v0a32 32 0 0 1 32-32ZM112 184h32"
+    />
+  </svg>}
+    >
+      I use a Phosphor icon!
+    </Card>
+    <Card title="Studio" href="/" />
+    <Card title="Extensibility" href="/webhooks" />
+</CardGroup>
 
-## Make it yours
+## Tutorials by platform
 
-Design a docs site that looks great and empowers your users.
+<CardGroup cols={4}>
+    <Card title="Next.js" href="/" />
+    <Card title="GraphQL" href="/" />
+    <Card title="Deploy with Vercel" href="/" />
+    <Card title="React" href="/" />
+</CardGroup>
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+{/* ## Example of pulling content from Contentful! */}
 
-## Create beautiful pages
+{/* <PromoCard /> */}
 
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
-
-<PromoCard />
+</div>

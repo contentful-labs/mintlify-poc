@@ -1,0 +1,30 @@
+---
+title: 'Content Delivery API'
+description: 'CDA'
+sidebarTitle: 'Content Delivery API'
+---
+
+# Content Delivery API
+
+<div class="note">
+<strong>Note</strong>: The use of Contentful is subject to the <a href="/r/knowledgebase/fair-use/">Fair Usage Policy</a> and to ensure uninterrupted functionality of the shared-service infrastructure, adhere to <a href="/developers/docs/technical-limits/">Technical Limits</a>.
+</div>
+
+The Content Delivery API (CDA), available at <i>cdn.contentful.com</i>, is a read-only API for delivering content from Contentful to apps, websites and other media. Content is delivered as JSON data, and images, videos and other media as files.
+
+The API is available via a globally distributed content delivery network (CDN). The server closest to the user serves all content, which minimizes latency and especially benefits mobile apps. Hosting content in multiple global data centers also improves the availability of content. 
+
+You'll need a free Contentful account and Contentful space to get started. You can sign up [here](/sign-up/).
+
+<div class="note">
+<strong>Note</strong>:
+For EU data residency customers, the Base URL is <strong>https://cdn.eu.contentful.com</strong>. 
+</div>
+
+## Authentication
+
+Any client requesting content from the CDA needs to provide an access token that has access to the environment you're requesting content from. For example, if you create an access token that only has access to the `master` environment of your space, you will not be able to use this token to access content from any other environment.
+
+You have two options to supply the access token, either as an `Authorization` request header field, or as an `access_token` URI query parameter. The CDA implements the standardized OAuth 2.0 bearer token specification already supported by many HTTP clients.
+
+You create access tokens in the *APIs* tab of each space in the Contentful web app. [Our reference guide](/developers/docs/references/authentication/) has more details on how authentication works with Contentful.

@@ -15,60 +15,36 @@
   "favicon": "/logo/Contentful_C_White.svg",
   "navigation": {
     "tabs": [
-      {"tab": "Get started",
-      "groups": [
-        {
-          "group": "Getting started",
-          "pages": [
-            "quickstart",
-            "development"
-          ]
-        },
-        {
-          "group": "Customization",
-          "pages": [
-            "essentials/settings",
-            "essentials/navigation"
-          ]
-        },
-        {
-          "group": "Writing content",
-          "pages": [
-            "essentials/markdown",
-            "essentials/code",
-            "essentials/images",
-            "essentials/reusable-snippets"
-          ]
-        },
-        {
-          "group": "AI tools",
-          "pages": [
-            "ai-tools/cursor",
-            "ai-tools/claude-code",
-            "ai-tools/windsurf"
-          ]
-        }
-      ]
-    },
-      {"tab": "Concepts",
-        "pages": ["concepts/index", "concepts/domain-model"]
-      
-    },
-      {"tab": "Tutorials"},
-      {"tab": "Platforms"},
-      {"tab": "Extensibility"},
-      {"tab": "Webhooks",
+      {
+        "tab": "Get started"
+      },
+      {
+        "tab": "Concepts",
+        "pages": [
+          "concepts/index",
+          "concepts/domain-model"
+        ]
+      },
+      {
+        "tab": "Tutorials"
+      },
+      {
+        "tab": "SDKs"
+      },
+      {
+        "tab": "Extensibility",
         "pages": [
           "webhooks/index",
           {
             "group": "Overview",
             "pages": [
               "webhooks/overview",
-              {"group": "Details", 
-              "pages": [
-                "webhooks/headers"
-              ]
-            },
+              {
+                "group": "Details",
+                "pages": [
+                  "webhooks/headers"
+                ]
+              },
               "webhooks/filters",
               "webhooks/transformations",
               "webhooks/secrets",
@@ -84,22 +60,69 @@
           },
           {
             "group": "Guides",
+            "expanded": false,
             "pages": [
               "webhooks/configure-webhook"
             ]
           }
         ]
       },
-      {"tab": "Infrastructure"},
-      {"tab": "Studio"},
-      {"tab": "Personalization"},
-      {"tab": "Tools"},
-      {"tab": "API Reference ",
-        "openapi": "api-reference/openapi.yaml"
+      {
+        "tab": "Studio"
       },
-      {"tab": "Changelog",
+      {
+        "tab": "Personalization"
+      },
+      {
+        "tab": "Tools"
+      },
+      {
+        "tab": "API Reference",
         "pages": [
-          "changelog"
+          "references/index",
+          {
+            "group": "Content Delivery API",
+            "openapi": "references/openapi.yaml",
+            "expanded": false,
+            "pages": [
+              "references/content-delivery-api/index",
+              {
+                "group": "Content Types",
+                "expanded": false,
+                "pages": [
+                  "references/content-delivery-api/content-types/index",
+                  "GET /spaces/{spaceId}/environments/{environmentId}/content_types/{contentTypeId}",
+                  "GET /spaces/{spaceId}/environments/{environmentId}/content_types"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Content Management API",
+            "expanded": false,
+            "pages": [
+              "references/content-management-api/index",
+              {
+                "group": "Spaces",
+                "pages": [
+                  "references/content-management-api/spaces/index",
+                  {
+                    "group": "Spaces Collection",
+                    "pages": [
+                      "references/content-management-api/spaces/spaces-collection/index",
+                      "references/content-management-api/spaces/spaces-collection/create-a-space"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "references/webhooks/on-user-created"
+            ]
+          }
         ]
       }
     ]
@@ -111,35 +134,35 @@
   "navbar": {
     "links": [
       {
-        "label": "Changelog",
-        "href": "https://contentful.com/changelog"
+        "label": "Help Center",
+        "href": "https://www.contentful.com/help/"
       },
       {
         "label": "Blog",
-        "href": "mailto:hi@mintlify.com"
+        "href": "https://www.contentful.com/blog/"
       },
       {
-        "label": "Help Center",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Changelog",
+        "href": "https://contentful.com/changelog"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get Started",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://www.contentful.com/sign-up/"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
@@ -176,5 +199,21 @@
   },
   "styling": {
     "eyebrows": "breadcrumbs"
+  },
+  "fonts": {
+    "family": "Avenir Next",
+    "src": "/assets/avenir-normal-400.woff2",
+    "format": "woff2"
+  },
+  "api": {
+    "mdx": {
+      "server": "https://api.contentful.com", 
+      "auth": {
+        "method": "bearer"
+      },
+      "playground": {
+        "display": "interactive"
+      }
+    }
   }
 }
